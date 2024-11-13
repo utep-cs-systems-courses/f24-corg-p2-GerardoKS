@@ -1,0 +1,32 @@
+# makfile configuration
+COMMON_OBJECTS  =
+CPU             = msp430g2553
+CFLAGS          = -mmcu=${CPU} -I../h
+LDFLAGS		= -L/opt/ti/msp430_gcc/include
+
+#switch the compiler (for the internal make rules)
+CC              = msp430-elf-gcc
+AS              = msp430-elf-as
+
+all: Toy.elf
+
+#additional rules for files
+Toy.elf: ${COMMON_OBJECTS} Button_P13Handler.o wdInteruptHandler.o LightHandler/PulsingLights.o LightHandler/stateMachine.o SoundHandler/SoundSetUp.o SoundHandler/MarryHadALittleLamb.o ../timerLib/libTimer.a
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^
+
+load: Toy.elf
+	msp430loader.sh Toy.elf
+
+clean: 
+	rm -f *.o *.elf
+Button_P13Handler.o: LightHandler/PulsingLights.h SoundHandler/SoundSetUp.h
+
+wdInteruptHandler.o: LightHandler/stateMachine.h SoundHandler/MarryHadALittleLamb.h
+
+PulsingLights.o: LightHandler/PulsingLights.c LightHandler/PulsingLights.h
+
+stateMachine.o: LightHandler/PulsingLights.h LightHandler/stateMachine.h
+
+SoundSetUp.o: SoundHandler/SoundSetUp.h 
+
+MarryHadALittleLamb.o: SoundHandler/SoundSetUp.h SoundHandler/MarryHadALittleLamb.h 

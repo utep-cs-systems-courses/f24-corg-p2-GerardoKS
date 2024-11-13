@@ -1,0 +1,45 @@
+# makfile configuration
+COMMON_OBJECTS  =
+CPU             = msp430g2553
+CFLAGS          = -mmcu=${CPU} -I../h
+LDFLAGS		= -L/opt/ti/msp430_gcc/include
+
+#switch the compiler (for the internal make rules)
+CC              = msp430-elf-gcc
+AS              = msp430-elf-as
+
+all: Project3.elf
+
+#additional rules for files
+Project3.elf: ${COMMON_OBJECTS} Project3Driver.o SwitchControl.o button_P2/SoundHandler.o button_P2/SingleSoundHandler/SingleSoundSetUp.o button_P13/Button_P13Handler.o button_P13/LightHandler/PulsingLights.o button_P13/LightHandler/stateMachine.o button_P13/SoundHandler/SoundSetUp.o button_P13/SoundHandler/MarryHadALittleLamb.o button_P2/SingleLightHandler/LED.o timerLib/libTimer.a
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^
+
+load: Project3.elf
+	msp430loader.sh Project3.elf
+
+clean:
+	rm -f *.o *.elf
+
+#Main
+Project3Driver.o: Project3Driver.c
+
+SwitchControl.o: SwitchControl.c SwitchControl.h 
+
+#P2
+SoundHandler.o: button_P2/SoundHandler.c button_P2/SingleLightHandler/led.h
+
+SingleSoundSetUp.o : button_P2/SingleSoundHandler/SingleSoundSetUp.c button_P2/SingleSoundHandler/SingleSoundSetUp.h
+
+LED.o : button_P2/SingleLightHandler/led.h button_P2/SingleLightHandler/LED.c
+
+#P13
+Button_P13Handler.o: button_P13/LightHandler/PulsingLights.h button_P13/LightHandler/stateMachine.h button_P13/SoundHandler/SetUp.h button_P13/SoundHandler/MarryHadALittleLamb.h button_P13/Button_P13Handler.c
+
+PulsingLIghts.o: button_P13/LightHandler/PulsingLights.c button_P13/LightHandler/PulsingLights.h
+
+stateMachine.o: button_P13/LightHandler/PulsingLights.h button_P13/LightHandler/stateMachine.h
+
+SoundSetUp.o: button_P13/SoundHandler/SoundSetUp.h
+
+MarryHadALittleLamb.o: button_P13/SoundHandler/SoundSetUp.h button_P13/SoundHandler/MarryHadALittleLamb.h
+

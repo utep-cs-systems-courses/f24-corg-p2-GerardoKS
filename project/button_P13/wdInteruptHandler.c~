@@ -1,0 +1,8 @@
+#include <msp430.h>
+#include "LightHandler/stateMachine.h"
+
+
+void
+__interrupt_vec(WDT_VECTOR) WDT(int duration){
+  timeAdvStateMachine(duration);
+}

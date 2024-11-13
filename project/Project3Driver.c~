@@ -1,0 +1,10 @@
+#include <msp430.h>
+#include "timerLib/libTimer.h"
+#include "SwitchControl.h"
+
+void main(void){
+  switch_P1_init();
+  switch_P2_init();
+  wdit_init();
+  or_sr(0x18);  // CPU off, GIE on
+}
